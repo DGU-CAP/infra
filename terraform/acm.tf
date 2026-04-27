@@ -24,5 +24,5 @@ output "acm_certificate_arn" {
 
 output "acm_dns_validation_records" {
   description = "ACM DNS 검증 레코드 — 도메인 DNS에 CNAME으로 추가 필요"
-  value       = var.domain_name != "" ? aws_acm_certificate.main[0].domain_validation_options : toset([])
+  value       = var.domain_name != "" ? aws_acm_certificate.main[0].domain_validation_options : null
 }
