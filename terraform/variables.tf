@@ -51,3 +51,9 @@ variable "domain_name" {
   type        = string
   default     = ""
 }
+
+variable "team_members" {
+  description = "EKS cluster-admin 권한을 부여할 팀원 IAM ARN 목록"
+  type        = list(string)
+  default     = []
+}

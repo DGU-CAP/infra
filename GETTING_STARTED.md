@@ -74,7 +74,58 @@ terraform init
 
 ---
 
-## 5. Claude Code 설정 (선택)
+## 5. EKS kubectl 접속 설정
+
+> EKS 클러스터가 켜져 있는 상태에서 진행하세요. ([EKS_ONOFF.md](./EKS_ONOFF.md) 참고)
+
+### 5-1. 팀 리더에게 접근 권한 요청
+
+먼저 본인의 IAM ARN을 확인해서 팀 리더에게 공유합니다.
+
+```bash
+aws sts get-caller-identity --profile dgu-cap --query Arn --output text
+# 예: arn:aws:iam::123456789012:user/홍길동
+```
+
+팀 리더가 `terraform/terraform.tfvars`의 `team_members`에 ARN을 추가하고 `terraform apply`를 실행하면 권한이 부여됩니다.
+
+### 5-2. kubeconfig 업데이트
+
+권한 부여 확인 후 아래 명령어로 kubectl을 EKS에 연결합니다.
+
+```bash
+export AWS_PROFILE=dgu-cap
+aws eks update-kubeconfig --name dgu-cap-eks --region ap-northeast-2
+```
+
+### 5-3. 연결 확인
+
+```bash
+kubectl get nodes
+```
+
+노드 2대가 `Ready` 상태로 출력되면 완료입니다.
+
+```
+NAME                                            STATUS   ROLES    AGE
+ip-10-0-101-xxx.ap-northeast-2.compute.internal   Ready    <none>   ...
+ip-10-0-102-xxx.ap-northeast-2.compute.internal   Ready    <none>   ...
+```
+
+---
+
+> **팀 리더 — 팀원 추가 방법**
+>
+> `terraform/terraform.tfvars`의 `team_members`에 ARN 추가 후:
+> ```bash
+> export AWS_PROFILE=dgu-cap
+> cd terraform
+> terraform apply
+> ```
+
+---
+
+## 6. Claude Code 설정 (선택)
 
 Claude Code를 사용하면 이슈 생성, PR, 코드리뷰를 슬래시 커맨드로 처리할 수 있습니다.
 
