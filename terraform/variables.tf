@@ -39,3 +39,15 @@ variable "private_subnet_cidrs" {
   type        = list(string)
   default     = ["10.0.101.0/24", "10.0.102.0/24"]
 }
+
+variable "k8s_version" {
+  description = "EKS Kubernetes 버전"
+  type        = string
+  default     = "1.32"
+}
+
+variable "domain_name" {
+  description = "모니터링 서비스 도메인 (ACM 인증서용, 예: monitoring.example.com)"
+  type        = string
+  default     = ""
+}

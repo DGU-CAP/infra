@@ -6,12 +6,40 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 5.0"
     }
+    helm = {
+      source  = "hashicorp/helm"
+      version = "~> 2.0"
+    }
+    tls = {
+      source  = "hashicorp/tls"
+      version = "~> 4.0"
+    }
+    http = {
+      source  = "hashicorp/http"
+      version = "~> 3.0"
+    }
   }
 }
 # backend 설정은 backend.tf 참고
 
 provider "aws" {
   region = var.aws_region
+}
+
+locals {
+  eks_cluster_name = "${var.project_name}-eks"
+}
+
+provider "helm" {
+  kubernetes {
+    host                   = aws_eks_cluster.main.endpoint
+    cluster_ca_certificate = base64decode(aws_eks_cluster.main.certificate_authority[0].data)
+    exec {
+      api_version = "client.authentication.k8s.io/v1beta1"
+      command     = "aws"
+      args        = ["eks", "get-token", "--cluster-name", local.eks_cluster_name, "--region", var.aws_region]
+    }
+  }
 }
 
 # ──────────────────────────────────────────
@@ -55,8 +83,8 @@ resource "aws_subnet" "public" {
     Name        = "${var.project_name}-public-subnet-${count.index + 1}"
     Environment = var.environment
     Type        = "public"
-    # EKS에서 public subnet 자동 감지에 필요한 태그 (추후 EKS 연동 시 활용)
-    "kubernetes.io/role/elb" = "1"
+    "kubernetes.io/role/elb"                      = "1"
+    "kubernetes.io/cluster/${local.eks_cluster_name}" = "shared"
   }
 }
 
@@ -71,8 +99,8 @@ resource "aws_subnet" "private" {
     Name        = "${var.project_name}-private-subnet-${count.index + 1}"
     Environment = var.environment
     Type        = "private"
-    # EKS에서 private subnet 자동 감지에 필요한 태그 (추후 EKS 연동 시 활용)
-    "kubernetes.io/role/internal-elb" = "1"
+    "kubernetes.io/role/internal-elb"             = "1"
+    "kubernetes.io/cluster/${local.eks_cluster_name}" = "shared"
   }
 }
 
