@@ -21,20 +21,26 @@ else
   APPS="$APP"
 fi
 
+LOADED=""
+
 for app in $APPS; do
   IMAGE="$ECR_BASE/dgu-cap-$app:$TAG"
 
   echo ""
   echo "==> $app 이미지 pull: $IMAGE"
-  docker pull $IMAGE || { echo "[경고] $app 이미지 pull 실패. ECR에 이미지가 없을 수 있습니다."; continue; }
+  if ! docker pull $IMAGE; then
+    echo "[경고] $app 이미지 pull 실패. ECR에 이미지가 없을 수 있습니다. 스킵."
+    continue
+  fi
 
   echo "==> $app 이미지 kind 클러스터에 로드..."
   kind load docker-image $IMAGE --name $CLUSTER
+  LOADED="$LOADED $app"
 done
 
 echo ""
 echo "==> 매니페스트 적용..."
-for app in $APPS; do
+for app in $LOADED; do
   kubectl apply -f "$SCRIPT_DIR/manifests/$app.yaml"
 done
 
