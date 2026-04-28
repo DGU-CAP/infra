@@ -93,19 +93,31 @@ kubectl port-forward -n monitoring svc/kube-prometheus-stack-grafana 3000:80
 ### 실행
 
 ```powershell
-# PowerShell
+# PowerShell — 둘 다
 .\kind\pull-and-load.ps1
 
-# 특정 태그 지정 시
-.\kind\pull-and-load.ps1 -Tag v1.0.0
+# 백엔드만
+.\kind\pull-and-load.ps1 -App backend
+
+# AI만
+.\kind\pull-and-load.ps1 -App ai
+
+# 특정 태그 지정
+.\kind\pull-and-load.ps1 -App backend -Tag v1.0.0
 ```
 
 ```bash
-# Git Bash
+# Git Bash — 둘 다
 bash kind/pull-and-load.sh
 
-# 특정 태그 지정 시
-bash kind/pull-and-load.sh v1.0.0
+# 백엔드만
+bash kind/pull-and-load.sh backend
+
+# AI만
+bash kind/pull-and-load.sh ai
+
+# 특정 태그 지정
+bash kind/pull-and-load.sh backend v1.0.0
 ```
 
 스크립트가 하는 일:
