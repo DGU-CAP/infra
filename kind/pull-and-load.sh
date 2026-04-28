@@ -47,6 +47,10 @@ echo "==> PostgreSQL 적용..."
 kubectl apply -f "$SCRIPT_DIR/manifests/postgres.yaml"
 
 echo ""
+echo "==> Redis 적용..."
+kubectl apply -f "$SCRIPT_DIR/manifests/redis.yaml"
+
+echo ""
 echo "==> 매니페스트 적용..."
 for app in $LOADED; do
   kubectl apply -f "$SCRIPT_DIR/manifests/$app.yaml"

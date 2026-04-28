@@ -170,6 +170,21 @@ kubectl port-forward svc/postgres 5432:5432
 # 이후 jdbc:postgresql://localhost:5432/dgu_cap 으로 접속 가능
 ```
 
+**Redis 접속 정보 (백엔드 application.yaml):**
+
+```yaml
+spring:
+  data:
+    redis:
+      host: redis
+      port: 6379
+```
+
+```powershell
+# 로컬 PC에서 직접 접속 시
+kubectl port-forward svc/redis 6379:6379
+```
+
 ### Pod 접속 (포트포워딩)
 
 ```powershell
