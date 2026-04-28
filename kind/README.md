@@ -153,6 +153,23 @@ bash kind/pull-and-load.sh backend v1.0.0
 3. kind 클러스터에 이미지 로드
 4. Kubernetes 매니페스트 적용 (`kind/manifests/`)
 
+### DB 접속 정보 (백엔드 application.yaml)
+
+```yaml
+spring:
+  datasource:
+    url: jdbc:postgresql://postgres:5432/dgu_cap
+    username: dgu_cap
+    password: dgu_cap_local
+```
+
+> Pod 안에서는 `postgres` 서비스명으로 접근. 로컬 PC에서 직접 접속하려면 아래 포트포워딩 사용.
+
+```powershell
+kubectl port-forward svc/postgres 5432:5432
+# 이후 jdbc:postgresql://localhost:5432/dgu_cap 으로 접속 가능
+```
+
 ### Pod 접속 (포트포워딩)
 
 ```powershell
