@@ -11,9 +11,12 @@ DGU-CAP 인프라 레포지토리 초기 세팅 가이드입니다.
 | 도구 | 설치 확인 | 설치 링크 |
 |---|---|---|
 | AWS CLI | `aws --version` | https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html |
+| Docker Desktop | `docker --version` | https://www.docker.com/products/docker-desktop |
 | Terraform | `terraform -version` | https://developer.hashicorp.com/terraform/install |
 | GitHub CLI | `gh --version` | https://cli.github.com |
 | Claude Code | `claude --version` | https://claude.ai/code |
+
+> **Docker Desktop** 설치 후 반드시 실행 중인 상태에서 kind를 사용하세요.
 
 ---
 
