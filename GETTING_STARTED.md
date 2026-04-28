@@ -19,15 +19,15 @@ DGU-CAP 인프라 레포지토리 초기 세팅 가이드입니다.
 
 ## 1. AWS 프로필 설정
 
-팀 리더에게 공용 AWS Access Key를 전달받은 후 등록합니다.
+각자 본인의 IAM 계정 키를 사용합니다. AWS 콘솔 → IAM → 내 계정 → 액세스 키에서 발급받으세요.
 
 ```bash
 aws configure --profile dgu-cap
 ```
 
 ```
-AWS Access Key ID: (팀 리더에게 전달받은 키)
-AWS Secret Access Key: (팀 리더에게 전달받은 시크릿)
+AWS Access Key ID: (본인 IAM 액세스 키)
+AWS Secret Access Key: (본인 IAM 시크릿 키)
 Default region name: ap-northeast-2
 Default output format: json
 ```
@@ -38,6 +38,8 @@ aws sts get-caller-identity --profile dgu-cap
 ```
 
 계정 정보가 출력되면 정상입니다.
+
+> **IAM 계정이 없는 경우** — 팀 리더에게 요청하세요. 팀 리더가 AWS 콘솔에서 IAM 사용자를 생성해드립니다.
 
 ---
 
@@ -72,11 +74,14 @@ terraform init
 
 `Successfully configured the backend "s3"` 메시지가 나오면 완료입니다.
 
+> Terraform 실행 권한(S3, DynamoDB 등)이 없는 경우 팀 리더에게 IAM 권한 추가를 요청하세요.
+
 ---
 
 ## 5. EKS kubectl 접속 설정
 
-> EKS 클러스터가 켜져 있는 상태에서 진행하세요. ([EKS_ONOFF.md](./EKS_ONOFF.md) 참고)
+> **현재 EKS 클러스터는 비용 절감을 위해 미운영 상태입니다.**
+> EKS가 올라간 이후에 아래 절차를 진행하세요. ([EKS_ONOFF.md](./EKS_ONOFF.md) 참고)
 
 ### 5-1. 팀 리더에게 접근 권한 요청
 
@@ -178,13 +183,13 @@ fix: Private 서브넷 CIDR 중복 수정
 
 ```bash
 cd terraform
+export AWS_PROFILE=dgu-cap
 
-terraform plan      # 변경사항 미리 확인 (PR 전 필수)
-terraform apply     # 실제 적용 (Actions에서 수동 실행)
+terraform plan      # 변경사항 미리 확인 (작업 전 필수)
+terraform apply     # 실제 적용 (팀 리더가 주로 실행)
 ```
 
-> `terraform apply` 는 GitHub Actions에서 수동으로 실행합니다.
-> 로컬에서 직접 실행이 필요한 경우 팀 리더와 협의 후 진행하세요.
+> `terraform apply`는 인프라에 직접 영향을 줍니다. 팀 리더와 협의 후 실행하세요.
 
 ---
 

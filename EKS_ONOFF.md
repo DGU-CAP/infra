@@ -2,13 +2,15 @@
 
 비용 절감을 위해 사용하지 않을 때 EKS를 끄고, 필요할 때 다시 켜는 방법입니다.
 
+> **실행 권한**: `terraform apply` / `destroy`는 팀 리더만 실행합니다.
+
 ## 비용 구조
 
 | 리소스 | 시간당 | 하루 | 비고 |
 |---|---|---|---|
 | EKS 컨트롤 플레인 | $0.10 | ~$2.4 | 클러스터 존재만으로 과금 |
 | t3.medium 노드 × 2 | $0.083 | ~$2.0 | EC2 실행 시간 과금 |
-| NAT Gateway × 2 | - | ~$2.1 | **항상 켜있음 (네트워크 필수)** |
+| NAT Gateway × 1 | - | ~$1.1 | **항상 켜있음 (네트워크 필수)** |
 
 > EKS를 완전히 끄면 하루 **약 $4.4 절약** (NAT Gateway는 계속 과금)
 
@@ -19,13 +21,13 @@
 ```powershell
 # PowerShell
 $env:AWS_PROFILE = "dgu-cap"
-cd C:\Users\U\Desktop\dgu-cap\terraform
+cd <레포 클론 경로>/terraform
 ```
 
 ```bash
 # Git Bash
 export AWS_PROFILE=dgu-cap
-cd ~/Desktop/dgu-cap/terraform
+cd <레포 클론 경로>/terraform
 ```
 
 ---
@@ -67,6 +69,8 @@ aws eks update-kubeconfig --name dgu-cap-eks --region ap-northeast-2
 kubectl get nodes  # 노드 2대 Ready 확인
 ```
 
+팀원이 kubectl 접근이 필요한 경우 [GETTING_STARTED.md](./GETTING_STARTED.md)의 5번 항목을 참고하세요.
+
 ---
 
 ## 상태 확인
@@ -86,6 +90,6 @@ terraform state list | grep eks
 
 ## 주의사항
 
-- **끄기 전**: 배포된 앱과 Ingress(ALB)가 있다면 먼저 `kubectl delete` 로 삭제하거나, ALB가 자동 삭제되지 않을 경우 AWS 콘솔에서 수동 삭제 필요
+- **끄기 전**: 배포된 앱과 Ingress(ALB)가 있다면 먼저 `kubectl delete`로 삭제하거나, ALB가 자동 삭제되지 않을 경우 AWS 콘솔에서 수동 삭제 필요
 - **State 공유**: S3에 state가 저장되므로 한 명이 끄면 팀원 모두에게 반영됨. 끄기/켜기 전에 팀원에게 공유할 것
 - **NAT Gateway**: 끄지 않음. 끄면 네트워크 재구성이 필요해 비용 대비 복잡도가 높음
