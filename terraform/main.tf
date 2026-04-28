@@ -108,23 +108,20 @@ resource "aws_subnet" "private" {
 # NAT Gateway (Public Subnet에 배치)
 # ──────────────────────────────────────────
 resource "aws_eip" "nat" {
-  count  = 2
   domain = "vpc"
 
   tags = {
-    Name        = "${var.project_name}-nat-eip-${count.index + 1}"
+    Name        = "${var.project_name}-nat-eip"
     Environment = var.environment
   }
 }
 
 resource "aws_nat_gateway" "main" {
-  count = 2
-
-  allocation_id = aws_eip.nat[count.index].id
-  subnet_id     = aws_subnet.public[count.index].id
+  allocation_id = aws_eip.nat.id
+  subnet_id     = aws_subnet.public[0].id
 
   tags = {
-    Name        = "${var.project_name}-nat-gw-${count.index + 1}"
+    Name        = "${var.project_name}-nat-gw"
     Environment = var.environment
   }
 
@@ -161,7 +158,7 @@ resource "aws_route_table" "private" {
 
   route {
     cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.main[count.index].id
+    nat_gateway_id = aws_nat_gateway.main.id
   }
 
   tags = {
