@@ -2,23 +2,7 @@
 # 리소스를 최소화하여 로컬에서 가볍게 동작
 
 grafana:
-  enabled: true
-  adminPassword: admin
-
-  service:
-    type: NodePort
-    nodePort: 30300
-
-  persistence:
-    enabled: false
-
-  resources:
-    requests:
-      cpu: 100m
-      memory: 128Mi
-    limits:
-      cpu: 200m
-      memory: 256Mi
+  enabled: false   # 시각화는 우리 서비스가 담당
 
 prometheus:
   prometheusSpec:

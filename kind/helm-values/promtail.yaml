@@ -1,0 +1,14 @@
+# Promtail - kind 로컬 환경용
+# 각 노드의 컨테이너 로그를 Loki로 전달
+
+config:
+  clients:
+    - url: http://loki.monitoring.svc.cluster.local:3100/loki/api/v1/push
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 100m
+    memory: 128Mi

@@ -1,6 +1,12 @@
 # 로컬 개발 환경 (kind)
 
-백엔드 개발용 로컬 Kubernetes 클러스터 세팅 가이드입니다.
+쿠버네티스 모니터링 서비스 개발용 로컬 클러스터 세팅 가이드입니다.
+
+**구성:** Prometheus (메트릭 수집) + Loki (로그 수집) + Promtail (로그 전달) + 앱 Pod
+
+> Grafana는 우리 서비스가 직접 시각화하므로 설치하지 않습니다.
+
+---
 
 ## 사전 준비 (최초 1회)
 
@@ -63,7 +69,28 @@ helm install kube-prometheus-stack prometheus-community/kube-prometheus-stack `
 kubectl get pods -n monitoring
 ```
 
-### 3. Prometheus 접속 (필요할 때)
+### 3. Loki + Promtail 설치
+
+```powershell
+helm repo add grafana https://grafana.github.io/helm-charts
+helm repo update
+
+helm install loki grafana/loki `
+  --namespace monitoring `
+  --values kind/helm-values/loki.yaml
+
+helm install promtail grafana/promtail `
+  --namespace monitoring `
+  --values kind/helm-values/promtail.yaml
+```
+
+설치 확인:
+
+```powershell
+kubectl get pods -n monitoring
+```
+
+### 4. Prometheus 접속 (필요할 때)
 
 ```powershell
 kubectl port-forward -n monitoring svc/kube-prometheus-stack-prometheus 9090:9090
@@ -71,13 +98,13 @@ kubectl port-forward -n monitoring svc/kube-prometheus-stack-prometheus 9090:909
 
 브라우저: `http://localhost:9090`
 
-### 4. Grafana 접속 (필요할 때)
+### 5. Loki 접속 (필요할 때)
 
 ```powershell
-kubectl port-forward -n monitoring svc/kube-prometheus-stack-grafana 3000:80
+kubectl port-forward -n monitoring svc/loki 3100:3100
 ```
 
-브라우저: `http://localhost:3000` / ID: `admin` / PW: `admin`
+API: `http://localhost:3100`
 
 ---
 
@@ -165,5 +192,7 @@ kind/
 │   ├── backend.yaml                    # 백엔드 Deployment + Service
 │   └── ai.yaml                         # AI Deployment + Service
 └── helm-values/
-    └── kube-prometheus-stack.yaml      # Prometheus + Grafana 설정 (로컬 경량화)
+    ├── kube-prometheus-stack.yaml      # Prometheus 설정 (Grafana 비활성화)
+    ├── loki.yaml                       # 로그 수집 (단일 바이너리 모드)
+    └── promtail.yaml                   # 로그 → Loki 전달
 ```

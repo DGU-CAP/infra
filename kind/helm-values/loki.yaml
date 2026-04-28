@@ -1,0 +1,33 @@
+# Loki - kind 로컬 환경용 (단일 바이너리 모드)
+
+loki:
+  commonConfig:
+    replication_factor: 1
+
+  storage:
+    type: filesystem
+
+  auth_enabled: false
+
+deploymentMode: SingleBinary
+
+singleBinary:
+  replicas: 1
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+
+# 로컬 환경이므로 MinIO / S3 불필요
+minio:
+  enabled: false
+
+backend:
+  replicas: 0
+read:
+  replicas: 0
+write:
+  replicas: 0
