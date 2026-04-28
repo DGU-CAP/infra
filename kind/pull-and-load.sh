@@ -1,7 +1,8 @@
 #!/bin/bash
 set -e
 
-TAG=${1:-latest}
+APP=${1:-all}   # backend | ai | all
+TAG=${2:-latest}
 REGION="ap-northeast-2"
 ACCOUNT_ID="428185450315"
 ECR_BASE="$ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com"
@@ -14,7 +15,13 @@ aws ecr get-login-password --region $REGION \
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-for app in backend ai; do
+if [ "$APP" = "all" ]; then
+  APPS="backend ai"
+else
+  APPS="$APP"
+fi
+
+for app in $APPS; do
   IMAGE="$ECR_BASE/dgu-cap-$app:$TAG"
 
   echo ""
@@ -27,7 +34,9 @@ done
 
 echo ""
 echo "==> 매니페스트 적용..."
-kubectl apply -f "$SCRIPT_DIR/manifests/"
+for app in $APPS; do
+  kubectl apply -f "$SCRIPT_DIR/manifests/$app.yaml"
+done
 
 echo ""
 echo "==> 완료. Pod 상태 확인:"

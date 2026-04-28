@@ -1,4 +1,6 @@
 param(
+  [ValidateSet("backend", "ai", "all")]
+  [string]$App = "all",
   [string]$Tag = "latest"
 )
 
@@ -19,7 +21,7 @@ if ($LASTEXITCODE -ne 0) {
   exit 1
 }
 
-$images = @("backend", "ai")
+$images = if ($App -eq "all") { @("backend", "ai") } else { @($App) }
 
 foreach ($app in $images) {
   $image = "$ECR_BASE/dgu-cap-$app`:$Tag"
@@ -39,7 +41,9 @@ foreach ($app in $images) {
 
 Write-Host ""
 Write-Host "==> 매니페스트 적용..."
-kubectl apply -f $PSScriptRoot\manifests\
+foreach ($app in $images) {
+  kubectl apply -f "$PSScriptRoot\manifests\$app.yaml"
+}
 
 Write-Host ""
 Write-Host "==> 완료. Pod 상태 확인:"
