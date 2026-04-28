@@ -43,6 +43,10 @@ foreach ($app in $images) {
 }
 
 Write-Host ""
+Write-Host "==> RBAC 적용..."
+kubectl apply -f "$PSScriptRoot\manifests\backend-rbac.yaml"
+
+Write-Host ""
 Write-Host "==> 매니페스트 적용..."
 foreach ($app in $loaded) {
   kubectl apply -f "$PSScriptRoot\manifests\$app.yaml"

@@ -12,6 +12,7 @@ spec:
       labels:
         app: backend
     spec:
+      serviceAccountName: backend
       containers:
         - name: backend
           image: 428185450315.dkr.ecr.ap-northeast-2.amazonaws.com/dgu-cap-backend:latest
