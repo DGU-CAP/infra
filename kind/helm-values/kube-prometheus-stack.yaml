@@ -1,0 +1,44 @@
+# kube-prometheus-stack - kind 로컬 환경용
+# 리소스를 최소화하여 로컬에서 가볍게 동작
+
+grafana:
+  enabled: true
+  adminPassword: admin
+
+  service:
+    type: NodePort
+    nodePort: 30300
+
+  persistence:
+    enabled: false
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+
+prometheus:
+  prometheusSpec:
+    retention: 6h
+
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 300m
+        memory: 512Mi
+
+    storageSpec: {}
+
+alertmanager:
+  enabled: false
+
+nodeExporter:
+  enabled: true
+
+kubeStateMetrics:
+  enabled: true
