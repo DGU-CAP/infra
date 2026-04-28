@@ -3,7 +3,7 @@
 
 config:
   clients:
-    - url: http://loki.monitoring.svc.cluster.local:3100/loki/api/v1/push
+    - url: http://loki-gateway.monitoring.svc.cluster.local:80/loki/api/v1/push
 
 resources:
   requests:
