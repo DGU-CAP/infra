@@ -78,14 +78,14 @@ kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.pas
 레포 루트에서 아래 명령어 한 줄로 GitOps가 시작됩니다.
 
 ```powershell
-kubectl apply -f eks/apps/root.yaml
+kubectl apply -f k8s/apps/root.yaml
 ```
 
 ### 이 명령어가 하는 일
 
 ```
 root 앱 등록
-  └─ eks/apps/ 디렉토리 감시 시작
+  └─ k8s/apps/ 디렉토리 감시 시작
        ├─ backend.yaml 감지 → backend 앱 자동 등록
        ├─ ai.yaml 감지     → ai 앱 자동 등록
        ├─ postgres.yaml 감지 → postgres 앱 자동 등록
@@ -115,12 +115,12 @@ root       Synced        Healthy
 
 ### 예시: backend replicas 변경
 
-1. `eks/manifests/base/backend/deployment.yaml` 열기
+1. `k8s/manifests/base/backend/deployment.yaml` 열기
 2. `replicas: 1` → `replicas: 2` 로 변경
 3. 커밋 & push:
 
 ```powershell
-git add eks/manifests/base/backend/deployment.yaml
+git add k8s/manifests/base/backend/deployment.yaml
 git commit -m "test: backend replicas 2로 변경"
 git push
 ```
@@ -139,14 +139,14 @@ kubectl get pods -l app=backend
 
 ## 5. EKS 전환 방법
 
-kind에서 EKS로 전환할 때는 `eks/apps/` 아래 각 Application의 `path`만 바꾸면 됩니다.
+kind에서 EKS로 전환할 때는 `k8s/apps/` 아래 각 Application의 `path`만 바꾸면 됩니다.
 
 ```yaml
 # 변경 전 (kind — imagePullPolicy: Never)
-path: eks/manifests/overlays/kind/backend
+path: k8s/manifests/overlays/kind/backend
 
 # 변경 후 (EKS — imagePullPolicy: Always)
-path: eks/manifests/overlays/eks/backend
+path: k8s/manifests/overlays/k8s/backend
 ```
 
 변경 후 `main`에 push → ArgoCD 자동 반영.
@@ -156,7 +156,7 @@ path: eks/manifests/overlays/eks/backend
 ## 구조 한눈에 보기
 
 ```
-eks/
+k8s/
 ├── apps/                        # ArgoCD Application 정의
 │   ├── root.yaml                # 루트 앱 (하위 앱 자동 등록)
 │   ├── backend.yaml
@@ -167,7 +167,7 @@ eks/
     ├── base/                    # 공통 매니페스트 (이미지, 환경변수 등)
     └── overlays/
         ├── kind/                # kind 전용 (imagePullPolicy: Never)
-        └── eks/                 # EKS 전용 (imagePullPolicy: Always)
+        └── k8s/                 # EKS 전용 (imagePullPolicy: Always)
 ```
 
 ---

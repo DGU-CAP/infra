@@ -10,7 +10,7 @@ spec:
   source:
     repoURL: https://github.com/DGU-CAP/infra.git
     targetRevision: HEAD
-    path: eks/manifests/overlays/kind/postgres  # EKS 전환 시 overlays/eks/postgres 로 변경
+    path: k8s/manifests/overlays/kind/postgres  # EKS 전환 시 overlays/k8s/postgres 로 변경
   destination:
     server: https://kubernetes.default.svc
     namespace: default

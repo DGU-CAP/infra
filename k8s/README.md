@@ -1,4 +1,4 @@
-# eks/ — GitOps 매니페스트 (ArgoCD)
+# k8s/ — GitOps 매니페스트 (ArgoCD)
 
 ArgoCD App of Apps 패턴으로 관리되는 Kubernetes 매니페스트 디렉토리입니다.
 kind(로컬)와 EKS(실전) 환경을 Kustomize overlays로 분기합니다.
@@ -8,9 +8,9 @@ kind(로컬)와 EKS(실전) 환경을 Kustomize overlays로 분기합니다.
 ## 디렉토리 구조
 
 ```
-eks/
+k8s/
 ├── apps/                              # ArgoCD Application CRD (App of Apps)
-│   ├── root.yaml                      # 루트 앱 — eks/apps/ 를 감시하며 하위 앱 자동 등록
+│   ├── root.yaml                      # 루트 앱 — k8s/apps/ 를 감시하며 하위 앱 자동 등록
 │   ├── backend.yaml
 │   ├── ai.yaml
 │   ├── postgres.yaml
@@ -27,7 +27,7 @@ eks/
         │   ├── ai/                    # imagePullPolicy: Never 패치
         │   ├── postgres/              # 패치 없음 (base 그대로)
         │   └── redis/                 # 패치 없음 (base 그대로)
-        └── eks/                       # AWS EKS 전용
+        └── k8s/                       # AWS EKS 전용
             ├── backend/               # imagePullPolicy: Always 패치
             ├── ai/                    # imagePullPolicy: Always 패치
             ├── postgres/
@@ -72,10 +72,10 @@ ID: `admin` / PW: 위 명령 결과
 ### 4. 루트 앱 등록 (App of Apps 시작)
 
 ```powershell
-kubectl apply -f eks/apps/root.yaml
+kubectl apply -f k8s/apps/root.yaml
 ```
 
-이 한 줄로 ArgoCD가 `eks/apps/` 디렉토리를 감시하기 시작하고,
+이 한 줄로 ArgoCD가 `k8s/apps/` 디렉토리를 감시하기 시작하고,
 `backend`, `ai`, `postgres`, `redis` Application이 자동으로 등록됩니다.
 
 ---
@@ -92,14 +92,14 @@ Git push → ArgoCD 감지 (기본 3분 폴링) → 자동 sync → 클러스터
 
 ## EKS 전환 방법
 
-`eks/apps/` 아래 각 Application의 `path`를 변경하기만 하면 됩니다.
+`k8s/apps/` 아래 각 Application의 `path`를 변경하기만 하면 됩니다.
 
 ```yaml
 # 변경 전 (kind)
-path: eks/manifests/overlays/kind/backend
+path: k8s/manifests/overlays/kind/backend
 
 # 변경 후 (EKS)
-path: eks/manifests/overlays/eks/backend
+path: k8s/manifests/overlays/k8s/backend
 ```
 
 변경 후 `main`에 push → ArgoCD 자동 반영.
