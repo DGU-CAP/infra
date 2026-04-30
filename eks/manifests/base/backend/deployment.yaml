@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      serviceAccountName: backend
+      containers:
+        - name: backend
+          image: 428185450315.dkr.ecr.ap-northeast-2.amazonaws.com/dgu-cap-backend:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://postgres:5432/dgu_cap
+            - name: SPRING_DATASOURCE_USERNAME
+              value: dgu_cap
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: dgu_cap_local
+            - name: SPRING_DATA_REDIS_HOST
+              value: redis
+            - name: SPRING_DATA_REDIS_PORT
+              value: "6379"
+            - name: PROMETHEUS_URL
+              value: http://kube-prometheus-stack-prometheus.monitoring:9090
+            - name: LOKI_URL
+              value: http://loki-gateway.monitoring:80
+            - name: AI_URL
+              value: http://ai:8000
