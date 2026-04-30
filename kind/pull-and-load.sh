@@ -13,15 +13,11 @@ echo "==> ECR 로그인 중..."
 aws ecr get-login-password --region $REGION \
   | docker login --username AWS --password-stdin $ECR_BASE
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
 if [ "$APP" = "all" ]; then
   APPS="backend ai"
 else
   APPS="$APP"
 fi
-
-LOADED=""
 
 for app in $APPS; do
   IMAGE="$ECR_BASE/dgu-cap-$app:$TAG"
@@ -35,27 +31,8 @@ for app in $APPS; do
 
   echo "==> $app 이미지 kind 클러스터에 로드..."
   kind load docker-image $IMAGE --name $CLUSTER
-  LOADED="$LOADED $app"
 done
 
 echo ""
-echo "==> RBAC 적용..."
-kubectl apply -f "$SCRIPT_DIR/manifests/backend-rbac.yaml"
-
-echo ""
-echo "==> PostgreSQL 적용..."
-kubectl apply -f "$SCRIPT_DIR/manifests/postgres.yaml"
-
-echo ""
-echo "==> Redis 적용..."
-kubectl apply -f "$SCRIPT_DIR/manifests/redis.yaml"
-
-echo ""
-echo "==> 매니페스트 적용..."
-for app in $LOADED; do
-  kubectl apply -f "$SCRIPT_DIR/manifests/$app.yaml"
-done
-
-echo ""
-echo "==> 완료. Pod 상태 확인:"
-kubectl get pods
+echo "==> 완료. 배포는 ArgoCD가 자동으로 처리합니다."
+echo "    ArgoCD 상태 확인: kubectl get applications -n argocd"
