@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ai
+  template:
+    metadata:
+      labels:
+        app: ai
+    spec:
+      containers:
+        - name: ai
+          image: 428185450315.dkr.ecr.ap-northeast-2.amazonaws.com/dgu-cap-ai:latest
+          ports:
+            - containerPort: 8000
