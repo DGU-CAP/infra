@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: root
+  name: redis
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -10,10 +10,10 @@ spec:
   source:
     repoURL: https://github.com/DGU-CAP/infra.git
     targetRevision: HEAD
-    path: eks/apps
+    path: k8s/manifests/overlays/kind/redis  # EKS 전환 시 overlays/k8s/redis 로 변경
   destination:
     server: https://kubernetes.default.svc
-    namespace: argocd
+    namespace: default
   syncPolicy:
     automated:
       prune: true
