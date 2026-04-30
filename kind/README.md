@@ -151,7 +151,8 @@ bash kind/pull-and-load.sh backend v1.0.0
 1. ECR 로그인 (AWS 권한으로 임시 토큰 발급, 12시간 유효)
 2. backend / ai 이미지 pull
 3. kind 클러스터에 이미지 로드
-4. Kubernetes 매니페스트 적용 (`kind/manifests/`)
+
+> 매니페스트 배포는 ArgoCD가 자동으로 처리합니다. (`k8s/` 디렉토리 참고)
 
 ### DB 접속 정보 (백엔드 application.yaml)
 
@@ -220,11 +221,10 @@ kind/
 ├── cluster.yaml                        # kind 클러스터 정의 (control-plane 1 + worker 2)
 ├── pull-and-load.ps1                   # ECR 이미지 pull → kind 로드 (PowerShell)
 ├── pull-and-load.sh                    # ECR 이미지 pull → kind 로드 (Git Bash)
-├── manifests/
-│   ├── backend.yaml                    # 백엔드 Deployment + Service
-│   └── ai.yaml                         # AI Deployment + Service
 └── helm-values/
     ├── kube-prometheus-stack.yaml      # Prometheus 설정 (Grafana 비활성화)
     ├── loki.yaml                       # 로그 수집 (단일 바이너리 모드)
     └── promtail.yaml                   # 로그 → Loki 전달
+
+> K8s 매니페스트는 `k8s/` 디렉토리에서 ArgoCD가 관리합니다.
 ```

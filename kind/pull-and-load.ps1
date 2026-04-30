@@ -23,8 +23,6 @@ if ($LASTEXITCODE -ne 0) {
 
 $images = if ($App -eq "all") { @("backend", "ai") } else { @($App) }
 
-$loaded = @()
-
 foreach ($app in $images) {
   $image = "$ECR_BASE/dgu-cap-$app`:$Tag"
 
@@ -39,27 +37,8 @@ foreach ($app in $images) {
 
   Write-Host "==> $app 이미지 kind 클러스터에 로드..."
   kind load docker-image $image --name $CLUSTER
-  $loaded += $app
 }
 
 Write-Host ""
-Write-Host "==> RBAC 적용..."
-kubectl apply -f "$PSScriptRoot\manifests\backend-rbac.yaml"
-
-Write-Host ""
-Write-Host "==> PostgreSQL 적용..."
-kubectl apply -f "$PSScriptRoot\manifests\postgres.yaml"
-
-Write-Host ""
-Write-Host "==> Redis 적용..."
-kubectl apply -f "$PSScriptRoot\manifests\redis.yaml"
-
-Write-Host ""
-Write-Host "==> 매니페스트 적용..."
-foreach ($app in $loaded) {
-  kubectl apply -f "$PSScriptRoot\manifests\$app.yaml"
-}
-
-Write-Host ""
-Write-Host "==> 완료. Pod 상태 확인:"
-kubectl get pods
+Write-Host "==> 완료. 배포는 ArgoCD가 자동으로 처리합니다."
+Write-Host "    ArgoCD 상태 확인: kubectl get applications -n argocd"
