@@ -8,3 +8,6 @@ spec:
       containers:
         - name: ai
           imagePullPolicy: Never
+          envFrom:
+            - secretRef:
+                name: ai-secret
