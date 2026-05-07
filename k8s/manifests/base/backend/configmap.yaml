@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-config
+data:
+  SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/dgu_cap
+  SPRING_DATASOURCE_USERNAME: dgu_cap
+  SPRING_DATA_REDIS_HOST: redis
+  SPRING_DATA_REDIS_PORT: "6379"
+  PROMETHEUS_URL: http://kube-prometheus-stack-prometheus.monitoring:9090
+  LOKI_URL: http://loki-gateway.monitoring:80
+  AI_URL: http://ai:8000

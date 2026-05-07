@@ -17,6 +17,9 @@ override.tf.json
 # Bootstrap은 로컬 state 사용 (원격 backend 미사용)
 # bootstrap/terraform.tfstate 는 *.tfstate 패턴으로 이미 제외됨
 
+# Kubernetes Secrets (실제값 포함 파일)
+k8s/**/secret.yaml
+
 # 에디터 / OS
 .DS_Store
 Thumbs.db

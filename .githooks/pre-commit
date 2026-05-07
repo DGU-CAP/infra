@@ -1,0 +1,5 @@
+#!/bin/sh
+if git diff --cached --name-only | grep -q 'secret\.yaml$'; then
+  echo "ERROR: secret.yaml 커밋 차단. 민감 정보 포함 파일입니다."
+  exit 1
+fi
