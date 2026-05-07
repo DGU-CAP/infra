@@ -15,5 +15,8 @@ spec:
       containers:
         - name: ai
           image: 428185450315.dkr.ecr.ap-northeast-2.amazonaws.com/dgu-cap-ai:latest
+          envFrom:
+            - secretRef:
+                name: ai-secret
           ports:
             - containerPort: 8000
