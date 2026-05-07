@@ -10,3 +10,8 @@ data:
   PROMETHEUS_URL: http://kube-prometheus-stack-prometheus.monitoring:9090
   LOKI_URL: http://loki-gateway.monitoring:80
   AI_URL: http://ai:8000
+  ANOMALY_THRESHOLD_CPU: "90.0"
+  ANOMALY_THRESHOLD_MEMORY: "85.0"
+  ANOMALY_THRESHOLD_RESTART: "3"
+  ANOMALY_THRESHOLD_ERROR_RATE: "10.0"
+  ALERT_EMAIL: admin@example.com
