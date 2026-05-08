@@ -19,6 +19,7 @@ SENSITIVE_PATTERNS = [
     ".env",                # 환경변수 파일
     ".p12",
     ".pfx",
+    "secret.yaml"
 ]
 
 # 차단할 Bash 명령어 패턴 (민감 경로 포함 여부)
@@ -29,6 +30,7 @@ SENSITIVE_CMD_PATTERNS = [
     ".tfstate",
     "id_rsa",
     "id_ed25519",
+    "secret.yaml",
 ]
 
 def is_sensitive_path(path: str) -> bool:
