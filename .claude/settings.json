@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 .claude/hooks/block-sensitive.py"
+            "command": "python .claude/hooks/block-sensitive.py"
           }
         ]
       }
