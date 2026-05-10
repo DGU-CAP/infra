@@ -120,28 +120,26 @@ API: `http://localhost:3100`
 ### 실행
 
 ```powershell
-# PowerShell — 둘 다
+# PowerShell — 전체 (backend + ai + frontend)
 .\kind\pull-and-load.ps1
 
-# 백엔드만
+# 개별 앱
 .\kind\pull-and-load.ps1 -App backend
-
-# AI만
 .\kind\pull-and-load.ps1 -App ai
+.\kind\pull-and-load.ps1 -App frontend
 
 # 특정 태그 지정
 .\kind\pull-and-load.ps1 -App backend -Tag v1.0.0
 ```
 
 ```bash
-# Git Bash — 둘 다
+# Git Bash — 전체 (backend + ai + frontend)
 bash kind/pull-and-load.sh
 
-# 백엔드만
+# 개별 앱
 bash kind/pull-and-load.sh backend
-
-# AI만
 bash kind/pull-and-load.sh ai
+bash kind/pull-and-load.sh frontend
 
 # 특정 태그 지정
 bash kind/pull-and-load.sh backend v1.0.0

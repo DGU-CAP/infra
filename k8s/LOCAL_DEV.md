@@ -166,15 +166,14 @@ kubectl get applications -n argocd
 kind는 외부 이미지를 직접 pull할 수 없어 로컬에서 이미지를 로드해야 합니다.
 
 ```powershell
-# backend + ai 둘 다
+# 전체 (backend + ai + frontend)
 .\kind\pull-and-load.ps1
 
 # 개별 앱
 .\kind\pull-and-load.ps1 -App backend
 .\kind\pull-and-load.ps1 -App ai
+.\kind\pull-and-load.ps1 -App frontend
 ```
-
-> frontend 이미지 로드는 별도 진행 (아직 pull-and-load 스크립트 미지원).
 
 ---
 
