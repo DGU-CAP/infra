@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-APP=${1:-all}   # backend | ai | all
+APP=${1:-all}   # backend | ai | frontend | all
 TAG=${2:-latest}
 REGION="ap-northeast-2"
 ACCOUNT_ID="428185450315"
@@ -14,7 +14,7 @@ aws ecr get-login-password --region $REGION \
   | docker login --username AWS --password-stdin $ECR_BASE
 
 if [ "$APP" = "all" ]; then
-  APPS="backend ai"
+  APPS="backend ai frontend"
 else
   APPS="$APP"
 fi

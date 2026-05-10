@@ -1,5 +1,5 @@
 param(
-  [ValidateSet("backend", "ai", "all")]
+  [ValidateSet("backend", "ai", "frontend", "all")]
   [string]$App = "all",
   [string]$Tag = "latest"
 )
@@ -21,7 +21,7 @@ if ($LASTEXITCODE -ne 0) {
   exit 1
 }
 
-$images = if ($App -eq "all") { @("backend", "ai") } else { @($App) }
+$images = if ($App -eq "all") { @("backend", "ai", "frontend") } else { @($App) }
 
 foreach ($app in $images) {
   $image = "$ECR_BASE/dgu-cap-$app`:$Tag"
