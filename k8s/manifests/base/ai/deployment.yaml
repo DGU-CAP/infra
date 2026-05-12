@@ -20,3 +20,10 @@ spec:
                 name: ai-secret
           ports:
             - containerPort: 8000
+          volumeMounts:
+            - name: model-storage
+              mountPath: /app/models
+      volumes:
+        - name: model-storage
+          persistentVolumeClaim:
+            claimName: ai-model-pvc
