@@ -20,6 +20,9 @@ override.tf.json
 # Kubernetes Secrets (실제값 포함 파일)
 k8s/**/secret.yaml
 
+# Lambda 빌드 아티팩트
+*.zip
+
 # 에디터 / OS
 .DS_Store
 Thumbs.db
