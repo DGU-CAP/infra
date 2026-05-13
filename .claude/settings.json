@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python .claude/hooks/block-sensitive.py"
+            "command": "python C:/Users/U/Desktop/dgu-cap/.claude/hooks/block-sensitive.py"
           }
         ]
       }
