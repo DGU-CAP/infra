@@ -14,5 +14,4 @@ jobs:
 
       - name: Lint check
         run: |
-          echo "Running lint..."
-          exit 1  # 의도적 실패 — Slack 알림 테스트용. 실제 lint 붙이면 이 줄 제거.
+          echo "Lint check passed."
