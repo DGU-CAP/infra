@@ -43,7 +43,7 @@ variable "private_subnet_cidrs" {
 variable "k8s_version" {
   description = "EKS Kubernetes 버전"
   type        = string
-  default     = "1.32"
+  default     = "1.34"
 }
 
 variable "domain_name" {
