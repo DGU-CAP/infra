@@ -14,7 +14,7 @@ DGU-CAP 팀의 인프라 레포지토리입니다. AWS 위에 EKS 기반 플랫�
 
 ```
 terraform/   # AWS 인프라 (VPC, EKS, ECR, IAM 등)
-kind/        # 로컬 개발용 Kubernetes 클러스터 (kind + Prometheus/Grafana)
+kind/        # 로컬 개발용 Kubernetes 클러스터 (kind + Prometheus/Loki/Promtail, Grafana는 서비스가 직접 시각화)
 k8s/         # Kubernetes 매니페스트 (ArgoCD GitOps 관리, kind/EKS 공용)
 bootstrap/   # S3 + DynamoDB 백엔드 초기 생성 (어드민 1회 완료)
 ```
