@@ -28,3 +28,6 @@ k8s/**/secret.yaml
 Thumbs.db
 .idea/
 .vscode/
+
+# Claude Code worktrees
+.claude/worktrees/
