@@ -103,3 +103,48 @@ path: k8s/manifests/overlays/k8s/backend
 ```
 
 변경 후 `main`에 push → ArgoCD 자동 반영.
+
+---
+
+## SealedSecrets 운영 가이드
+
+평문 secret(`*/secret.yaml`)은 git에 못 올리지만, SealedSecrets로 봉인하면 안전하게 커밋할 수 있다.
+
+### 1. controller 배포 (1회)
+
+```bash
+cd terraform
+export AWS_PROFILE=dgu-cap
+terraform apply -target=helm_release.sealed_secrets
+```
+
+### 2. kubeseal CLI 설치 (1회)
+
+```bash
+brew install kubeseal      # macOS / Linuxbrew
+# 또는 scoop install kubeseal (Windows)
+```
+
+### 3. 시크릿 봉인
+
+```bash
+# 예: backend-secret
+kubectl -n default create secret generic backend-secret \
+  --from-env-file=./backend.env --dry-run=client -o yaml \
+  | kubeseal --controller-namespace sealed-secrets --controller-name sealed-secrets --format yaml \
+  > k8s/manifests/base/backend/sealedsecret.yaml
+```
+
+평문 임시 파일(`backend.env`)은 즉시 삭제.
+
+### 4. kustomization.yaml에 추가
+
+각 base의 `kustomization.yaml`에 `sealedsecret.yaml`을 resources로 추가.
+
+### 5. 봉인 키 백업
+
+```bash
+kubectl -n sealed-secrets get secret -l sealedsecrets.bitnami.com/sealed-secrets-key -o yaml > sealed-secrets-key-backup.yaml
+```
+
+이 파일은 절대 git에 커밋하지 말고 안전한 곳에 보관. 분실 시 모든 SealedSecret을 다시 봉인해야 한다.
