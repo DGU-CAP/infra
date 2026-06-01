@@ -1,8 +1,9 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: postgres
 spec:
+  serviceName: postgres
   replicas: 1
   selector:
     matchLabels:
@@ -24,6 +25,12 @@ spec:
               value: dgu_cap
             - name: POSTGRES_PASSWORD
               value: dgu_cap_local
+            # PGDATA를 마운트 볼륨의 하위 경로로 지정 (lost+found 충돌 회피)
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/postgresql/data
           resources:
             requests:
               cpu: 100m
@@ -31,3 +38,13 @@ spec:
             limits:
               cpu: 200m
               memory: 256Mi
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        # storageClassName 생략 → 클러스터 기본 SC 사용 (kind=standard / EKS=gp3)
+        resources:
+          requests:
+            storage: 10Gi

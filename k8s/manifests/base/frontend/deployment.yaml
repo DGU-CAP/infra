@@ -17,3 +17,10 @@ spec:
           image: 428185450315.dkr.ecr.ap-northeast-2.amazonaws.com/dgu-cap-frontend:latest
           ports:
             - containerPort: 3000
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 100m
+              memory: 128Mi
