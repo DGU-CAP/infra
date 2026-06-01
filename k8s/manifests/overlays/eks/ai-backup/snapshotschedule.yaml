@@ -1,0 +1,16 @@
+apiVersion: snapscheduler.backube/v1
+kind: SnapshotSchedule
+metadata:
+  name: ai-model-daily
+  namespace: default
+spec:
+  # ai StatefulSet의 volumeClaimTemplates PVC (라벨 app=ai) 대상
+  claimSelector:
+    matchLabels:
+      app: ai
+  # 매일 UTC 17:00 (= KST 02:00)
+  schedule: "0 17 * * *"
+  retention:
+    maxCount: 7 # 최근 7개 스냅샷만 보존, 초과분 자동 삭제
+  snapshotTemplate:
+    snapshotClassName: ebs-snapclass
