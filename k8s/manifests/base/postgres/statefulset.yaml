@@ -13,9 +13,16 @@ spec:
       labels:
         app: postgres
     spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: postgres
           image: postgres:16-alpine
+          # postgres 공식 이미지는 root로 시작해 postgres 유저로 권한 드롭(캡 필요)
+          # → drop ALL/runAsNonRoot 미적용. no_new_privs만 안전하게 설정.
+          securityContext:
+            allowPrivilegeEscalation: false
           ports:
             - containerPort: 5432
           env:

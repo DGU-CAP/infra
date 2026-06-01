@@ -13,9 +13,17 @@ spec:
       labels:
         app: ai
     spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: ai
           image: 428185450315.dkr.ecr.ap-northeast-2.amazonaws.com/dgu-cap-ai:latest
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
           envFrom:
             - secretRef:
                 name: ai-secret
