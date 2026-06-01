@@ -5,6 +5,11 @@ resources:
   - ../../../base/backend
   - externalsecret.yaml
 
+# 이미지 태그는 CI가 커밋 SHA로 교체: kustomize edit set image <name>=<name>:<git-sha>
+images:
+  - name: 428185450315.dkr.ecr.ap-northeast-2.amazonaws.com/dgu-cap-backend
+    newTag: latest # ← CI가 <git-sha>로 덮어씀
+
 patches:
   - path: patch.yaml
     target:
