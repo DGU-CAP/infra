@@ -10,7 +10,7 @@ resource "aws_ecr_repository" "apps" {
   for_each = toset(local.ecr_repos)
 
   name                 = "${var.project_name}-${each.key}"
-  image_tag_mutability = "MUTABLE"
+  image_tag_mutability = "IMMUTABLE" # 태그 덮어쓰기 금지 (커밋 SHA 태그 전제)
 
   image_scanning_configuration {
     scan_on_push = true
