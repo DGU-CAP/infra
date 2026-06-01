@@ -106,7 +106,54 @@ path: k8s/manifests/overlays/k8s/backend
 
 ---
 
-## SealedSecrets 운영 가이드
+## 시크릿 관리 (EKS): External Secrets + AWS Secrets Manager
+
+EKS 환경의 시크릿은 **External Secrets Operator(ESO)** 가 **AWS Secrets Manager**에서 읽어와 K8s Secret으로 만든다. 비밀값은 git에 일절 남지 않고 Secrets Manager에만 보관되며, ESO는 IRSA로 읽기 권한만 갖는다.
+
+```
+Secrets Manager (dgu-cap/backend, dgu-cap/ai)
+        │ ESO가 IRSA로 읽음
+        ▼
+ExternalSecret (overlays/eks/<app>) ── ClusterSecretStore(aws-secretsmanager)
+        ▼
+K8s Secret (backend-secret / ai-secret) 자동 생성 → Pod가 secretRef로 사용
+```
+
+### 1. ESO + IRSA 배포 (1회, terraform)
+
+```bash
+cd terraform
+export AWS_PROFILE=dgu-cap
+terraform apply   # external-secrets.tf (IRSA 역할 + helm_release.external_secrets)
+```
+
+### 2. Secrets Manager에 시크릿 등록 (운영자)
+
+`dgu-cap/<app>` 이름으로 **JSON** 시크릿을 만든다. 키 이름이 그대로 Pod 환경변수가 된다.
+
+```bash
+# backend: deployment의 envFrom(backend-secret)이 쓰는 키들
+aws secretsmanager create-secret --name dgu-cap/backend \
+  --secret-string '{"SPRING_DATASOURCE_PASSWORD":"...","JWT_SECRET":"..."}'
+
+# ai
+aws secretsmanager create-secret --name dgu-cap/ai \
+  --secret-string '{"OPENAI_API_KEY":"sk-..."}'
+```
+
+값 변경(회전)은 `aws secretsmanager put-secret-value`로 갱신하면 ESO가 `refreshInterval`(1h)마다 자동 반영한다.
+
+### 3. 동기화
+
+`k8s/apps/`의 `secretstore`(ClusterSecretStore) → backend/ai `ExternalSecret` 순으로 ArgoCD가 동기화하면 Secret이 자동 생성된다. 별도 수동 작업 불필요.
+
+> 로컬(kind)은 Secrets Manager에 접근할 수 없으므로 [LOCAL_DEV.md](./LOCAL_DEV.md)의 수동 `kubectl create secret` 방식을 유지한다(ExternalSecret은 eks overlay에만 존재).
+
+---
+
+## (구) SealedSecrets 운영 가이드
+
+> EKS는 위 External Secrets 방식으로 전환됨. SealedSecrets는 후속 정리 예정(컨트롤러만 설치된 상태).
 
 평문 secret(`*/secret.yaml`)은 git에 못 올리지만, SealedSecrets로 봉인하면 안전하게 커밋할 수 있다.
 
