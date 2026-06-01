@@ -106,6 +106,28 @@ path: k8s/manifests/overlays/k8s/backend
 
 ---
 
+## 이미지 태그 & 배포 (CI 계약)
+
+ECR은 `IMMUTABLE`이라 같은 태그 재push가 불가하다. 따라서 **커밋 SHA를 이미지 태그로** 쓰고, EKS overlay의 kustomize `images:`가 그 태그를 가리킨다. `:latest` 금지(EKS).
+
+```
+[앱 레포 CI]
+  1. docker build -t <ecr>/dgu-cap-<app>:<git-sha> .
+  2. docker push <ecr>/dgu-cap-<app>:<git-sha>            # IMMUTABLE: SHA라 충돌 없음
+  3. (infra 레포) cd k8s/manifests/overlays/eks/<app>
+     kustomize edit set image <ecr>/dgu-cap-<app>=<ecr>/dgu-cap-<app>:<git-sha>
+  4. git commit/push (infra)
+        │
+        ▼
+  ArgoCD가 overlay 변경 감지 → 자동 sync → 새 SHA 이미지로 롤아웃 (롤백=이전 커밋)
+```
+
+- **인프라 측 준비 완료**: `overlays/eks/{backend,ai,frontend}/kustomization.yaml`에 `images:` 트랜스포머가 있고 CI가 `newTag`만 SHA로 바꾸면 됨.
+- **로컬(kind)**: 로컬 빌드 `:latest` + `imagePullPolicy: Never`(ECR 미사용) 그대로 유지.
+- ArgoCD Image Updater를 붙이면 3~4단계를 자동화할 수도 있음(후속).
+
+---
+
 ## ai 모델 볼륨 백업 (EKS): EBS VolumeSnapshot
 
 ai는 **StatefulSet + `gp3-retain`(reclaimPolicy=Retain)** 으로 배포되어 PVC가 삭제돼도 EBS 볼륨이 보존된다. 추가로 **snapscheduler**가 모델 볼륨을 주기적으로 EBS 스냅샷한다.
