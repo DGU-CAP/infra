@@ -3,6 +3,7 @@ kind: Kustomization
 
 resources:
   - ../../../base/ai
+  - externalsecret.yaml
 
 patches:
   - path: patch.yaml
