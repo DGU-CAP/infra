@@ -20,6 +20,13 @@ spec:
                 name: ai-secret
           ports:
             - containerPort: 8000
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: 500m
+              memory: 1Gi
           volumeMounts:
             - name: model-storage
               mountPath: /code/models

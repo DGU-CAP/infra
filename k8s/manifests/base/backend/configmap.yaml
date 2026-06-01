@@ -8,7 +8,7 @@ data:
   SPRING_DATA_REDIS_HOST: redis
   SPRING_DATA_REDIS_PORT: "6379"
   PROMETHEUS_URL: http://kube-prometheus-stack-prometheus.monitoring:9090
-  LOKI_URL: http://loki-gateway.monitoring:80
+  LOKI_URL: http://loki.monitoring.svc:3100
   AI_URL: http://ai:8000
   ANOMALY_THRESHOLD_CPU: "90.0"
   ANOMALY_THRESHOLD_MEMORY: "85.0"
