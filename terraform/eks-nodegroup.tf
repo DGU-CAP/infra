@@ -6,14 +6,14 @@ resource "aws_eks_node_group" "main" {
   # 각 AZ의 Private Subnet에 노드 분산 배치
   subnet_ids = aws_subnet.private[*].id
 
-  instance_types = ["t3.small"]
+  instance_types = ["t3.medium"]
   ami_type       = "AL2023_x86_64_STANDARD"
   capacity_type  = "ON_DEMAND"
 
   scaling_config {
-    desired_size = 4
+    desired_size = 3
     min_size     = 2
-    max_size     = 4
+    max_size     = 3
   }
 
   update_config {
