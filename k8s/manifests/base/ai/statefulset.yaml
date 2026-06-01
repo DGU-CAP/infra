@@ -1,8 +1,9 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: ai
 spec:
+  serviceName: ai
   replicas: 1
   selector:
     matchLabels:
@@ -30,7 +31,15 @@ spec:
           volumeMounts:
             - name: model-storage
               mountPath: /code/models
-      volumes:
-        - name: model-storage
-          persistentVolumeClaim:
-            claimName: ai-model-pvc
+  volumeClaimTemplates:
+    - metadata:
+        name: model-storage
+        labels:
+          app: ai # SnapshotSchedule claimSelector가 이 라벨로 PVC를 찾음
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        # storageClassName 생략 → 기본 SC (kind=standard). EKS는 overlay에서 gp3-retain으로 지정.
+        resources:
+          requests:
+            storage: 10Gi

@@ -1,0 +1,7 @@
+apiVersion: snapshot.storage.k8s.io/v1
+kind: VolumeSnapshotClass
+metadata:
+  name: ebs-snapclass
+driver: ebs.csi.aws.com
+# VolumeSnapshot 삭제 시 실제 EBS 스냅샷도 삭제 (보존 개수는 snapscheduler가 관리)
+deletionPolicy: Delete

@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: ai
 spec:
@@ -8,3 +8,16 @@ spec:
       containers:
         - name: ai
           imagePullPolicy: Always
+  # EKS는 영속 보존용 gp3-retain 사용 (PVC 삭제돼도 EBS 볼륨 보존)
+  volumeClaimTemplates:
+    - metadata:
+        name: model-storage
+        labels:
+          app: ai
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: gp3-retain
+        resources:
+          requests:
+            storage: 10Gi

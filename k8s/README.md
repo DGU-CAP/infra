@@ -106,6 +106,33 @@ path: k8s/manifests/overlays/k8s/backend
 
 ---
 
+## ai 모델 볼륨 백업 (EKS): EBS VolumeSnapshot
+
+ai는 **StatefulSet + `gp3-retain`(reclaimPolicy=Retain)** 으로 배포되어 PVC가 삭제돼도 EBS 볼륨이 보존된다. 추가로 **snapscheduler**가 모델 볼륨을 주기적으로 EBS 스냅샷한다.
+
+```
+StatefulSet(ai) ── volumeClaimTemplates(model-storage, gp3-retain)
+        │ 라벨 app=ai
+        ▼
+SnapshotSchedule(ai-model-daily) ── 매일 02:00(KST), 최근 7개 보존
+        ▼
+VolumeSnapshot ── VolumeSnapshotClass(ebs-snapclass, driver ebs.csi.aws.com)
+        ▼
+AWS EBS 스냅샷
+```
+
+- **terraform**: `gp3-retain` StorageClass, `snapshot-controller` EKS 애드온(VolumeSnapshot CRD), `snapscheduler` Helm(`snapshots.tf`).
+- **k8s(eks)**: `overlays/eks/ai-backup/`(VolumeSnapshotClass + SnapshotSchedule), ArgoCD app `ai-backup`.
+- **복원**: 스냅샷에서 새 PVC 생성 → `dataSource`로 `VolumeSnapshot` 지정.
+- 로컬(kind)은 스냅샷/Retain 미적용(기본 SC 유지).
+
+```bash
+kubectl get volumesnapshot -n default        # 생성된 스냅샷 확인
+kubectl get snapshotschedule -n default      # 스케줄 상태
+```
+
+---
+
 ## 시크릿 관리 (EKS): External Secrets + AWS Secrets Manager
 
 EKS 환경의 시크릿은 **External Secrets Operator(ESO)** 가 **AWS Secrets Manager**에서 읽어와 K8s Secret으로 만든다. 비밀값은 git에 일절 남지 않고 Secrets Manager에만 보관되며, ESO는 IRSA로 읽기 권한만 갖는다.
