@@ -13,11 +13,19 @@ spec:
         app: backend
     spec:
       serviceAccountName: backend
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: backend
           image: 428185450315.dkr.ecr.ap-northeast-2.amazonaws.com/dgu-cap-backend:latest
           ports:
             - containerPort: 8080
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
           envFrom:
             - configMapRef:
                 name: backend-config
